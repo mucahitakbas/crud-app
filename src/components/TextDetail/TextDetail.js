@@ -1,27 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
-import { Modal } from "semantic-ui-react";
+import { useParams, useNavigate } from "react-router-dom";
 import Comments from "./Comments";
 import { api } from "../../api";
-
-function exampleReducer(state, action) {
-  switch (action.type) {
-    case "OPEN_MODAL":
-      return { open: true, dimmer: action.dimmer };
-    case "CLOSE_MODAL":
-      return { open: false };
-    default:
-      throw new Error();
-  }
-}
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 const TextDetail = (props) => {
-  const navigate = useNavigate();
-  const [state, dispatch] = React.useReducer(exampleReducer, {
-    open: false,
-    dimmer: undefined,
-  });
+  const [open, setOpen] = useState(false);
 
-  const { open, dimmer } = state;
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const navigate = useNavigate();
 
   const params = useParams();
   const [textDetail, setTextDetail] = useState({});
@@ -37,49 +33,51 @@ const TextDetail = (props) => {
     api()
       .delete(`/posts/${params.id}`)
       .then(() => {
-        dispatch({ type: "CLOSE_MODAL" });
+        setOpen(false);
         navigate("/");
       });
   };
-  const test = () => {
-    dispatch({ type: "OPEN_MODAL" });
-  };
+
   return (
     <div>
       <h2 className="ui header">{textDetail.title}</h2>
       <p>{textDetail.created_at}</p>
       <p>{textDetail.content}</p>
-      <Link
-        to={`/posts/${params.id}/EditText`}
-        className="ui inverted green button"
+
+      <Button
+        variant="outlined"
+        onClick={() => navigate(`/posts/${params.id}/EditText`)}
+        startIcon={<EditIcon />}
       >
         Edit
-      </Link>
-      <button className="ui inverted red button" onClick={test}>
-        Delete
-      </button>
-
-      <Modal
-        dimmer={dimmer}
-        open={open}
-        onClose={() => dispatch({ type: "CLOSE_MODAL" })}
+      </Button>
+      <Button
+        variant="outlined"
+        onClick={handleClickOpen}
+        startIcon={<DeleteIcon />}
       >
-        <Modal.Header>Delete post?</Modal.Header>
-        <Modal.Content>This post will be deleted if you approve!</Modal.Content>
-        <Modal.Actions>
-          <button
-            className="ui red button"
-            onClick={() => dispatch({ type: "CLOSE_MODAL" })}
-          >
-            Disagree
-          </button>
+        Delete
+      </Button>
 
-          <button className="ui green button" onClick={deleteHandlerText}>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Delete post?</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            This post will be deleted if you approve!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)}>Disagree</Button>
+          <Button onClick={deleteHandlerText} autoFocus>
             Agree
-          </button>
-        </Modal.Actions>
-      </Modal>
-
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Comments />
     </div>
   );

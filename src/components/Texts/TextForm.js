@@ -4,6 +4,9 @@ import isEmpty from "lodash/isEmpty";
 import { toast } from "react-toastify";
 import { api } from "../../api";
 import { useParams } from "react-router-dom";
+import Button from "@mui/material/Button";
+import AddIcon from "@mui/icons-material/Add";
+import CancelIcon from "@mui/icons-material/Cancel";
 const TEXT_START = {
   title: "",
   content: "",
@@ -23,7 +26,7 @@ const SendText = (props) => {
         theme: "colored",
       });
     } else {
-      if (props.texts.title) {
+      if (props.texts?.title) {
         api()
           .put(`/posts/${params.id}`, text)
           .then((response) => {
@@ -31,7 +34,7 @@ const SendText = (props) => {
           });
       } else {
         api()
-          .post(`/posts`, texts)
+          .post(`/posts`, text)
           .then((response) => {
             navigate("/");
           });
@@ -39,7 +42,7 @@ const SendText = (props) => {
     }
   };
   useEffect(() => {
-    if (props.texts.title && props.texts.content) setText(props.texts);
+    if (props.texts?.title && props.texts?.content) setText(props.texts);
   }, [props.texts]);
   console.log(props.texts);
   return (
@@ -67,16 +70,22 @@ const SendText = (props) => {
           />
         </div>
       </div>
-      <button
-        className="ui inverted primary button"
-        type="submit"
+
+      <Button
         onClick={handleTextSubmit}
+        variant="contained"
+        endIcon={<AddIcon />}
       >
         Add
-      </button>
-      <button className="ui inverted red button" onClick={() => navigate("/")}>
+      </Button>
+
+      <Button
+        variant="contained"
+        onClick={() => navigate("/")}
+        endIcon={<CancelIcon />}
+      >
         Cancel
-      </button>
+      </Button>
     </>
   );
 };

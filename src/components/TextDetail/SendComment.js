@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../api";
+import Button from "@mui/material/Button";
+import SendIcon from "@mui/icons-material/Send";
 const COMMENT_START = { display_name: "", body: "" };
 const SendComment = ({ comments, setComments }) => {
   const params = useParams();
@@ -44,9 +46,10 @@ const SendComment = ({ comments, setComments }) => {
           onChange={handleOnchange}
           value={commentBody.body}
         ></textarea>
-        <button className="ui inverted green button" type="submit">
+        <Button variant="contained" type="submit" endIcon={<SendIcon />}>
           Send
-        </button>
+        </Button>
+       
       </form>
     </>
   );
