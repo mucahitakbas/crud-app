@@ -7,6 +7,9 @@ import { useParams } from "react-router-dom";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import CancelIcon from "@mui/icons-material/Cancel";
+import TextField from "@mui/material/TextField";
+import TextareaAutosize from "@mui/material/TextareaAutosize";
+
 const TEXT_START = {
   title: "",
   content: "",
@@ -44,29 +47,38 @@ const SendText = (props) => {
   useEffect(() => {
     if (props.texts?.title && props.texts?.content) setText(props.texts);
   }, [props.texts]);
-  console.log(props.texts);
+
   return (
     <>
       <div className="ui form">
         <div className="field">
           <h4>Post Title</h4>
-          <input
+
+          <TextField
+            fullWidth
+            label="Title"
+            id="fullWidth"
+            placeholder="Write a title..."
             name="title"
             type="text"
-            placeholder="Write a title..."
             onChange={handleOnchange}
-            value={text.title}
+            sx={{
+              maxWidth: "100%",
+              mb: 1,
+            }}
           />
         </div>
       </div>
       <div className="ui form">
         <div className="field">
           <h4>Text</h4>
-          <textarea
+
+          <TextareaAutosize
             name="content"
-            placeholder="Write content..."
             onChange={handleOnchange}
-            value={text.content}
+            minRows={10}
+            placeholder="Write content..."
+            style={{ width: "100%" }}
           />
         </div>
       </div>
@@ -83,6 +95,8 @@ const SendText = (props) => {
         variant="contained"
         onClick={() => navigate("/")}
         endIcon={<CancelIcon />}
+        color="error"
+        sx={{ m: 1 }}
       >
         Cancel
       </Button>
